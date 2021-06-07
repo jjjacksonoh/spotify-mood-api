@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Example of the Authorization Code flow with Spotify</title>
+    <title>Spotify Mood Tracker</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <style type="text/css">
       #login, #loggedin {
@@ -19,27 +19,29 @@
   <body>
     <div class="container">
       <div id="login">
-        <h1>This is an example of the Authorization Code flow</h1>
+        <h1>Welcome to Spotify Mood Tracker</h1>
         <a href="/login" class="btn btn-primary">Log in with Spotify</a>
       </div>
       <div id="loggedin">
-        <div id="user-profile">
-        </div>
-        <div id="user-tracks">
-        </div>
-        <div id="user-tracks-2">
-        </div>
-        <div id="user-tracks-3">
-        </div>
-        <div id="user-tracks-4">
-        </div>
-        <div id="user-tracks-5">
-        </div>
-        <div id="user-artist">
-        </div>
+        <div id="user-profile"></div>
+        <div id="user-tracks"></div>
+        <div id="user-tracks-2"></div>
+        <div id="user-tracks-3"></div>
+        <div id="user-tracks-4"></div>
+        <div id="user-tracks-5"></div>
+        <div id="user-artist"></div>
+        <div id="user-artist-2"></div>
+        <div id="user-artist-3"></div>
+        <div id="user-artist-4"></div>
+        <div id="user-artist-5"></div>
         <div id="oauth">
         </div>
-        <div>
+        <div class="buttons">
+          <button id="shortbtn" class="btn">Past 4 Weeks</button>
+          <button id="middlebtn" class="btn">Past 6 Months</button>
+          <button id="longbtn" class="btn">All Time</button>
+        </div>
+        <div id="moodForm">
           <form>
             <input type="radio" id="happy" name="mood" value="happy" onclick="moodChoice(this.value)">
             <label for="happy">Happy</label><br>
@@ -55,95 +57,136 @@
       </div>
     </div>
 
-    <script id="user-profile-template" type="text/x-handlebars-template">
-      <h1>Logged in as {{display_name}}</h1>
-      <div class="media">
-        <div class="pull-left">
-          <img class="media-object" width="150" src="{{images.0.url}}" />
+    <div id="scripts">
+      <script id="user-profile-template" type="text/x-handlebars-template">
+        <h1>Logged in as {{display_name}}</h1>
+        <div class="media">
+          <div class="pull-left">
+            <img class="media-object" width="150" src="{{images.0.url}}" />
+          </div>
+          <div class="media-body">
+            <dl class="dl-horizontal">
+              <dt>Display name</dt><dd class="clearfix">{{display_name}}</dd>
+              <dt>Id</dt><dd id="userId">{{id}}</dd>
+              <dt>Email</dt><dd>{{email}}</dd>
+              <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
+              <dt>Link</dt><dd><a href="{{href}}">{{href}}</a></dd>
+              <dt>Profile Image</dt><dd class="clearfix"><a href="{{images.0.url}}">{{images.0.url}}</a></dd>
+              <dt>Country</dt><dd>{{country}}</dd>
+            </dl>
+          </div>
         </div>
-        <div class="media-body">
-          <dl class="dl-horizontal">
-            <dt>Display name</dt><dd class="clearfix">{{display_name}}</dd>
-            <dt>Id</dt><dd id="userId">{{id}}</dd>
-            <dt>Email</dt><dd>{{email}}</dd>
-            <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
-            <dt>Link</dt><dd><a href="{{href}}">{{href}}</a></dd>
-            <dt>Profile Image</dt><dd class="clearfix"><a href="{{images.0.url}}">{{images.0.url}}</a></dd>
-            <dt>Country</dt><dd>{{country}}</dd>
-          </dl>
+      </script>
+
+      <script id="user-track-template-1" type="text/x-handlebars-template">
+        <div class="media">
+          <div class="media-body">
+            <dl class="dl-horizontal">
+              <dt>Top Track</dt><dd class="clearfix" id="trackOne">{{name}}</dd>
+            </dl>
+          </div>
         </div>
-      </div>
-    </script>
+      </script>
 
-    <script id="user-track-template-1" type="text/x-handlebars-template">
-      <div class="media">
-        <div class="media-body">
-          <dl class="dl-horizontal">
-            <dt>Top Track</dt><dd class="clearfix" id="trackOne">{{name}}</dd>
-          </dl>
+      <script id="user-track-template-2" type="text/x-handlebars-template">
+        <div class="media">
+          <div class="media-body">
+            <dl class="dl-horizontal">
+              <dt>Second Track</dt><dd class="clearfix" id="trackTwo">{{name}}</dd>
+            </dl>
+          </div>
         </div>
-      </div>
-    </script>
+      </script>
 
-    <script id="user-track-template-2" type="text/x-handlebars-template">
-      <div class="media">
-        <div class="media-body">
-          <dl class="dl-horizontal">
-            <dt>Second Track</dt><dd class="clearfix" id="trackTwo">{{name}}</dd>
-          </dl>
+      <script id="user-track-template-3" type="text/x-handlebars-template">
+        <div class="media">
+          <div class="media-body">
+            <dl class="dl-horizontal">
+              <dt>Third Track</dt><dd class="clearfix" id="trackThree">{{name}}</dd>
+            </dl>
+          </div>
         </div>
-      </div>
-    </script>
+      </script>
 
-    <script id="user-track-template-3" type="text/x-handlebars-template">
-      <div class="media">
-        <div class="media-body">
-          <dl class="dl-horizontal">
-            <dt>Third Track</dt><dd class="clearfix" id="trackThree">{{name}}</dd>
-          </dl>
+      <script id="user-track-template-4" type="text/x-handlebars-template">
+        <div class="media">
+          <div class="media-body">
+            <dl class="dl-horizontal">
+              <dt>Fourth Track</dt><dd class="clearfix" id="trackFour">{{name}}</dd>
+            </dl>
+          </div>
         </div>
-      </div>
-    </script>
+      </script>
 
-    <script id="user-track-template-4" type="text/x-handlebars-template">
-      <div class="media">
-        <div class="media-body">
-          <dl class="dl-horizontal">
-            <dt>Fourth Track</dt><dd class="clearfix" id="trackFour">{{name}}</dd>
-          </dl>
+      <script id="user-track-template-5" type="text/x-handlebars-template">
+        <div class="media">
+          <div class="media-body">
+            <dl class="dl-horizontal">
+              <dt>Fifth Track</dt><dd class="clearfix" id="trackFive">{{name}}</dd>
+            </dl>
+          </div>
         </div>
-      </div>
-    </script>
+      </script>
 
-    <script id="user-track-template-5" type="text/x-handlebars-template">
-      <div class="media">
-        <div class="media-body">
-          <dl class="dl-horizontal">
-            <dt>Fifth Track</dt><dd class="clearfix" id="trackFive">{{name}}</dd>
-          </dl>
+      <script id="user-artist-template" type="text/x-handlebars-template">
+        <div class="media">
+          <div class="media-body">
+            <dl class="dl-horizontal">
+              <dt>Top Artist</dt><dd class="clearfix" id="artOne">{{name}}</dd>
+            </dl>
+          </div>
         </div>
-      </div>
-    </script>
+      </script>
 
-    <script id="user-artist-template" type="text/x-handlebars-template">
-      <div class="media">
-        <div class="media-body">
-          <dl class="dl-horizontal">
-            <dt>Top Artist</dt><dd class="clearfix" id="artOne">{{name}}</dd>
-            <!--<dt>Profile Image</dt><dd>{{images}}</dd>-->
-          </dl>
+      <script id="user-artist-template-2" type="text/x-handlebars-template">
+        <div class="media">
+          <div class="media-body">
+            <dl class="dl-horizontal">
+              <dt>Second Artist</dt><dd class="clearfix" id="artTwo">{{name}}</dd>
+            </dl>
+          </div>
         </div>
-      </div>
-    </script>
+      </script>
 
+      <script id="user-artist-template-3" type="text/x-handlebars-template">
+        <div class="media">
+          <div class="media-body">
+            <dl class="dl-horizontal">
+              <dt>Third Artist</dt><dd class="clearfix" id="artThree">{{name}}</dd>
+            </dl>
+          </div>
+        </div>
+      </script>
 
-    <script id="oauth-template" type="text/x-handlebars-template">
-      <h2>oAuth info</h2>
-      <dl class="dl-horizontal">
-        <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
-        <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}</dd>
-      </dl>
-    </script>
+      <script id="user-artist-template-4" type="text/x-handlebars-template">
+        <div class="media">
+          <div class="media-body">
+            <dl class="dl-horizontal">
+              <dt>Fourth Artist</dt><dd class="clearfix" id="artFour">{{name}}</dd>
+            </dl>
+          </div>
+        </div>
+      </script>
+
+      <script id="user-artist-template-5" type="text/x-handlebars-template">
+        <div class="media">
+          <div class="media-body">
+            <dl class="dl-horizontal">
+              <dt>Fifth Artist</dt><dd class="clearfix" id="artFive">{{name}}</dd>
+            </dl>
+          </div>
+        </div>
+      </script>
+
+      <script id="oauth-template" type="text/x-handlebars-template">
+        <h2>oAuth info</h2>
+        <dl class="dl-horizontal">
+          <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
+          <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}</dd>
+        </dl>
+      </script>
+    </div>
+    
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -163,6 +206,8 @@
           }
           return hashParams;
         }
+
+
 
         var userProfileSource = document.getElementById('user-profile-template').innerHTML,
             userProfileTemplate = Handlebars.compile(userProfileSource),
@@ -191,6 +236,22 @@
             userArtistSource = document.getElementById('user-artist-template').innerHTML,
             userArtistTemplate = Handlebars.compile(userArtistSource),
             userArtistPlaceholder = document.getElementById('user-artist');
+            
+            userArtistTwoSource = document.getElementById('user-artist-template-2').innerHTML,
+            userArtistTwoTemplate = Handlebars.compile(userArtistTwoSource),
+            userArtistTwoPlaceholder = document.getElementById('user-artist-2');
+
+            userArtistThreeSource = document.getElementById('user-artist-template-3').innerHTML,
+            userArtistThreeTemplate = Handlebars.compile(userArtistThreeSource),
+            userArtistThreePlaceholder = document.getElementById('user-artist-3');
+
+            userArtistFourSource = document.getElementById('user-artist-template-4').innerHTML,
+            userArtistFourTemplate = Handlebars.compile(userArtistFourSource),
+            userArtistFourPlaceholder = document.getElementById('user-artist-4');
+
+            userArtistFiveSource = document.getElementById('user-artist-template-5').innerHTML,
+            userArtistFiveTemplate = Handlebars.compile(userArtistFiveSource),
+            userArtistFivePlaceholder = document.getElementById('user-artist-5');
 
         var oauthSource = document.getElementById('oauth-template').innerHTML,
             oauthTemplate = Handlebars.compile(oauthSource),
@@ -224,8 +285,103 @@
                   $('#loggedin').show();
                 }
             })
+          } else {
+              // render initial screen
+              $('#login').show();
+              $('#loggedin').hide();
+          }
+
+        $("#longbtn")
+          .on(
+            'click',
+            function() {
+              if (access_token) {
+            // render oauth info
+            oauthPlaceholder.innerHTML = oauthTemplate({
+              access_token: access_token,
+              refresh_token: refresh_token
+            });
+
             $.ajax({
-                  url: 'https://api.spotify.com/v1/me/top/tracks',
+                url: 'https://api.spotify.com/v1/me',
+                headers: {
+                  'Authorization': 'Bearer ' + access_token
+                },
+                success: function(response) {
+                  userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+
+                  $('#login').hide();
+                  $('#loggedin').show();
+                }
+            })
+            $.ajax({
+                  url: 'https://api.spotify.com/v1/me/top/tracks?time_range=long_term',
+                  headers: {
+                    'Authorization': 'Bearer ' + access_token
+                  },
+                  success: function(response) {
+                    userTrackPlaceholder.innerHTML = userTrackTemplate(response.items[0]);
+                    userTrackTwoPlaceholder.innerHTML = userTrackTwoTemplate(response.items[1]);
+                    userTrackThreePlaceholder.innerHTML = userTrackThreeTemplate(response.items[2]);
+                    userTrackFourPlaceholder.innerHTML = userTrackFourTemplate(response.items[3]);
+                    userTrackFivePlaceholder.innerHTML = userTrackFiveTemplate(response.items[4]);
+                    
+                    
+
+                    $('#login').hide();
+                    $('#loggedin').show();
+                    $('#moodForm').hide();
+                  }
+
+
+            })
+            $.ajax({
+              url: 'https://api.spotify.com/v1/me/top/artists?time_range=long_term',
+              headers: {
+                'Authorization': 'Bearer ' + access_token
+              },
+              success: function(response) {
+                userArtistPlaceholder.innerHTML = userArtistTemplate(response.items[0]);
+                userArtistTwoPlaceholder.innerHTML = userArtistTwoTemplate(response.items[1]);
+                userArtistThreePlaceholder.innerHTML = userArtistThreeTemplate(response.items[2]);
+                userArtistFourPlaceholder.innerHTML = userArtistFourTemplate(response.items[3]);
+                userArtistFivePlaceholder.innerHTML = userArtistFiveTemplate(response.items[4]);
+              }
+            });
+          } else {
+              // render initial screen
+              $('#login').show();
+              $('#loggedin').hide();
+          }
+            }
+          )
+
+        $("#middlebtn")
+          .on(
+            'click',
+            function() {
+              if (access_token) {
+            // render oauth info
+            oauthPlaceholder.innerHTML = oauthTemplate({
+              access_token: access_token,
+              refresh_token: refresh_token
+            });
+
+            $.ajax({
+                url: 'https://api.spotify.com/v1/me',
+                headers: {
+                  'Authorization': 'Bearer ' + access_token
+                },
+                success: function(response) {
+                  userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+
+                  $('#login').hide();
+                  $('#loggedin').show();
+                  $('#moodForm').hide();
+                }
+            })
+            $.ajax({
+                  url: 'https://api.spotify.com/v1/me/top/tracks?time_range=medium_term',
                   headers: {
                     'Authorization': 'Bearer ' + access_token
                   },
@@ -245,12 +401,16 @@
 
             })
             $.ajax({
-              url: 'https://api.spotify.com/v1/me/top/artists',
+              url: 'https://api.spotify.com/v1/me/top/artists?time_range=medium_term',
               headers: {
                 'Authorization': 'Bearer ' + access_token
               },
               success: function(response) {
                 userArtistPlaceholder.innerHTML = userArtistTemplate(response.items[0]);
+                userArtistTwoPlaceholder.innerHTML = userArtistTwoTemplate(response.items[1]);
+                userArtistThreePlaceholder.innerHTML = userArtistThreeTemplate(response.items[2]);
+                userArtistFourPlaceholder.innerHTML = userArtistFourTemplate(response.items[3]);
+                userArtistFivePlaceholder.innerHTML = userArtistFiveTemplate(response.items[4]);
               }
             });
           } else {
@@ -258,6 +418,71 @@
               $('#login').show();
               $('#loggedin').hide();
           }
+            }
+          )
+
+          $("#shortbtn")
+          .on(
+            'click',
+            function() {
+              if (access_token) {
+            // render oauth info
+              oauthPlaceholder.innerHTML = oauthTemplate({
+              access_token: access_token,
+              refresh_token: refresh_token
+              });
+
+              $.ajax({
+                  url: 'https://api.spotify.com/v1/me',
+                  headers: {
+                    'Authorization': 'Bearer ' + access_token
+                  },
+                  success: function(response) {
+                    userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+
+                    $('#login').hide();
+                    $('#loggedin').show();
+                  }
+              })
+              $.ajax({
+                    url: 'https://api.spotify.com/v1/me/top/tracks?time_range=short_term',
+                    headers: {
+                      'Authorization': 'Bearer ' + access_token
+                    },
+                    success: function(response) {
+                      userTrackPlaceholder.innerHTML = userTrackTemplate(response.items[0]);
+                      userTrackTwoPlaceholder.innerHTML = userTrackTwoTemplate(response.items[1]);
+                      userTrackThreePlaceholder.innerHTML = userTrackThreeTemplate(response.items[2]);
+                      userTrackFourPlaceholder.innerHTML = userTrackFourTemplate(response.items[3]);
+                      userTrackFivePlaceholder.innerHTML = userTrackFiveTemplate(response.items[4]);
+                      
+                      
+
+                      $('#login').hide();
+                      $('#loggedin').show();
+                      $('#moodForm').show();
+                    }
+              })
+              $.ajax({
+                url: 'https://api.spotify.com/v1/me/top/artists?time_range=short_term',
+                headers: {
+                  'Authorization': 'Bearer ' + access_token
+                },
+                success: function(response) {
+                  userArtistPlaceholder.innerHTML = userArtistTemplate(response.items[0]);
+                  userArtistTwoPlaceholder.innerHTML = userArtistTwoTemplate(response.items[1]);
+                  userArtistThreePlaceholder.innerHTML = userArtistThreeTemplate(response.items[2]);
+                  userArtistFourPlaceholder.innerHTML = userArtistFourTemplate(response.items[3]);
+                  userArtistFivePlaceholder.innerHTML = userArtistFiveTemplate(response.items[4]);
+                }
+              });
+            } else {
+                // render initial screen
+                $('#login').show();
+                $('#loggedin').hide();
+                }
+              }
+          )
 
           document.getElementById('obtain-new-token').addEventListener('click', function() {
             $.ajax({
