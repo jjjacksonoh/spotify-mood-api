@@ -3,6 +3,7 @@
   <head>
     <title>Spotify Mood Tracker</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="index.css">
     <style type="text/css">
       #login, #loggedin {
         display: none;
@@ -35,12 +36,24 @@
         <div id="user-artist-4"></div>
         <div id="user-artist-5"></div>
         <div id="oauth">
-        </div>
-        <div class="buttons">
-          <button id="shortbtn" class="btn">Past 4 Weeks</button>
-          <button id="middlebtn" class="btn">Past 6 Months</button>
-          <button id="longbtn" class="btn">All Time</button>
-        </div>
+      </div>
+      <div class="buttons">
+        <button id="shortbtn" class="btn">Past 4 Weeks</button>
+        <button id="middlebtn" class="btn">Past 6 Months</button>
+        <button id="longbtn" class="btn">All Time</button>
+      </div>
+      <div class="hidden">
+        <div id="trackOneId"></div>
+        <div id="trackTwoId"></div>
+        <div id="trackThreeId"></div>
+        <div id="trackFourId"></div>
+        <div id="trackFiveId"></div>
+        <div id="artistOneId"></div>
+        <div id="artistTwoId"></div>
+        <div id="artistThreeId"></div>
+        <div id="artistFourId"></div>
+        <div id="artistFiveId"></div>
+      </div>
         <div id="moodForm">
           <form>
             <input type="radio" id="happy" name="mood" value="happy" onclick="moodChoice(this.value)">
@@ -50,8 +63,18 @@
             <input type="radio" id="neutral" name="mood" value="neutral" onclick="moodChoice(this.value)">
             <label for="neutral">Neutral</label><br>
             <button onclick="postMood(event)" id="save" class="btn btn-primary" id="create">Save</button>
-            <button id="cancel" class="btn" id="cancel">Cancel</button>
+            <button id="cancel" class="btn">Cancel</button>
           </form>
+        </div>
+        <div class="searchstuff">
+          <form>
+            <!-- <input type="radio" name="track"> Search for track</button>
+            <input type="radio" name="artist"> Search for artist -->
+            <input type="text" name="search" id="search" placeholder="Search...">
+            <input type="submit" id="filter">
+          </form>
+          <div id="searchResult">
+          </div>
         </div>
         <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
       </div>
@@ -178,6 +201,47 @@
         </div>
       </script>
 
+      <script id="tId1" type="text/x-handlebars-template">
+        <p id="trId1">{{id}}</p>
+      </script>
+
+      <script id="tId2" type="text/x-handlebars-template">
+        <p id="trId2">{{id}}</p>
+      </script>
+
+      <script id="tId3" type="text/x-handlebars-template">
+        <p id="trId3">{{id}}</p>
+      </script>
+
+      <script id="tId4" type="text/x-handlebars-template">
+        <p id="trId4">{{id}}</p>
+      </script>
+
+      <script id="tId5" type="text/x-handlebars-template">
+        <p id="trId5">{{id}}</p>
+      </script>
+
+      <script id="aId1" type="text/x-handlebars-template">
+        <p id="arId1">{{id}}</p>
+      </script>
+
+      <script id="aId2" type="text/x-handlebars-template">
+        <p id="arId2">{{id}}</p>
+      </script>
+
+      <script id="aId3" type="text/x-handlebars-template">
+        <p id="arId3">{{id}}</p>
+      </script>
+
+      <script id="aId4" type="text/x-handlebars-template">
+        <p id="arId4">{{id}}</p>
+      </script>
+
+      <script id="aId5" type="text/x-handlebars-template">
+        <p id="arId5">{{id}}</p>
+      </script>
+
+
       <script id="oauth-template" type="text/x-handlebars-template">
         <h2>oAuth info</h2>
         <dl class="dl-horizontal">
@@ -251,11 +315,53 @@
 
             userArtistFiveSource = document.getElementById('user-artist-template-5').innerHTML,
             userArtistFiveTemplate = Handlebars.compile(userArtistFiveSource),
-            userArtistFivePlaceholder = document.getElementById('user-artist-5');
+            userArtistFivePlaceholder = document.getElementById('user-artist-5'),
+
+            trackOneSource = document.getElementById('tId1').innerHTML,
+            trackOneTemplate = Handlebars.compile(trackOneSource),
+            trackOneId = document.getElementById('trackOneId'),
+
+            trackTwoSource = document.getElementById('tId2').innerHTML,
+            trackTwoTemplate = Handlebars.compile(trackTwoSource),
+            trackTwoId = document.getElementById('trackTwoId'),
+
+            trackThreeSource = document.getElementById('tId3').innerHTML,
+            trackThreeTemplate = Handlebars.compile(trackThreeSource),
+            trackThreeId = document.getElementById('trackThreeId'),
+
+            trackFourSource = document.getElementById('tId4').innerHTML,
+            trackFourTemplate = Handlebars.compile(trackFourSource),
+            trackFourId = document.getElementById('trackFourId'),
+
+            trackFiveSource = document.getElementById('tId5').innerHTML,
+            trackFiveTemplate = Handlebars.compile(trackFiveSource),
+            trackFiveId = document.getElementById('trackFiveId'),
+
+            aOneSource = document.getElementById('aId1').innerHTML,
+            aOneTemplate = Handlebars.compile(aOneSource),
+            aOneId = document.getElementById('artistOneId'),
+
+            aTwoSource = document.getElementById('aId2').innerHTML,
+            aTwoTemplate = Handlebars.compile(aTwoSource),
+            aTwoId = document.getElementById('artistTwoId'),
+
+            aThreeSource = document.getElementById('aId3').innerHTML,
+            aThreeTemplate = Handlebars.compile(aThreeSource),
+            aThreeId = document.getElementById('artistThreeId'),
+
+            aFourSource = document.getElementById('aId4').innerHTML,
+            aFourTemplate = Handlebars.compile(aFourSource),
+            aFourId = document.getElementById('artistFourId'),
+
+            aFiveSource = document.getElementById('aId5').innerHTML,
+            aFiveTemplate = Handlebars.compile(aFiveSource),
+            aFiveId = document.getElementById('artistFiveId');
+            
 
         var oauthSource = document.getElementById('oauth-template').innerHTML,
             oauthTemplate = Handlebars.compile(oauthSource),
             oauthPlaceholder = document.getElementById('oauth');
+
 
         var params = getHashParams();
 
@@ -283,6 +389,7 @@
 
                   $('#login').hide();
                   $('#loggedin').show();
+                  $('#moodForm').hide();
                 }
             })
           } else {
@@ -450,11 +557,24 @@
                       'Authorization': 'Bearer ' + access_token
                     },
                     success: function(response) {
+                      console.log(response)
                       userTrackPlaceholder.innerHTML = userTrackTemplate(response.items[0]);
                       userTrackTwoPlaceholder.innerHTML = userTrackTwoTemplate(response.items[1]);
                       userTrackThreePlaceholder.innerHTML = userTrackThreeTemplate(response.items[2]);
                       userTrackFourPlaceholder.innerHTML = userTrackFourTemplate(response.items[3]);
                       userTrackFivePlaceholder.innerHTML = userTrackFiveTemplate(response.items[4]);
+
+                      trackOneId.innerHTML = trackOneTemplate(response.items[0])
+                      trackTwoId.innerHTML = trackTwoTemplate(response.items[1])
+                      trackThreeId.innerHTML = trackThreeTemplate(response.items[2])
+                      trackFourId.innerHTML = trackFourTemplate(response.items[3])
+                      trackFiveId.innerHTML = trackFiveTemplate(response.items[4])
+
+                      aOneId.innerHTML = aOneTemplate(response.items[0])
+                      aTwoId.innerHTML = aTwoTemplate(response.items[1])
+                      aThreeId.innerHTML = aThreeTemplate(response.items[2])
+                      aFourId.innerHTML = aFourTemplate(response.items[3])
+                      aFiveId.innerHTML = aFiveTemplate(response.items[4])
                       
                       
 
@@ -504,4 +624,3 @@
     <script src="scripts/editor.js"></script>
   </body>
 </html>
-

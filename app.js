@@ -132,11 +132,12 @@ app.get('/callback', function(req, res) {
         };
 
         request.get(artists, function(error, response, body) {
-          for(i=0; i < body.items.length; i++){
+          /* for(i=0; i < body.items.length; i++){
             //console.log(body)
             topArtists.push(body.items[i].name)
           }
-          console.log(topArtists);
+          console.log(topArtists); */
+          console.log(body);
         })
 
         var tracks = {
