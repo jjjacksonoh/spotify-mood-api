@@ -25,7 +25,7 @@ mongoose.connect(config.database, config.mongoConfig, err => {
 
 var client_id = 'c3919f9b3e584b559df45f4fe95bad2b'; // Your client id
 var client_secret = '28cf37b9cb5a4765b897f49548f5b0a4'; // Your secret
-var redirect_uri = 'https://listeningincolor.herokuapp.com/callback'//'http://localhost:8888/callback'; // Your redirect uri
+var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
 topArtists = [];
 topTracks = [];
