@@ -42,7 +42,7 @@ const SnapshotSchema = new Schema({
         required: true
     },
     mood: {
-        type: Schema.Types.String,
+        type: Schema.Types.Number,
         required: true
     },
     timeStamp: { type: Date, default: Date.now }

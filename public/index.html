@@ -3,7 +3,7 @@
   <head>
     <title>Spotify Mood Tracker</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="/css/editor.css">
     <style type="text/css">
       #login, #loggedin {
         display: none;
@@ -25,22 +25,30 @@
       </div>
       <div id="loggedin">
         <div id="user-profile"></div>
-        <div id="user-tracks"></div>
-        <div id="user-tracks-2"></div>
-        <div id="user-tracks-3"></div>
-        <div id="user-tracks-4"></div>
-        <div id="user-tracks-5"></div>
-        <div id="user-artist"></div>
-        <div id="user-artist-2"></div>
-        <div id="user-artist-3"></div>
-        <div id="user-artist-4"></div>
-        <div id="user-artist-5"></div>
-        <div id="oauth">
-      </div>
-      <div class="buttons">
-        <button id="shortbtn" class="btn">Past 4 Weeks</button>
-        <button id="middlebtn" class="btn">Past 6 Months</button>
-        <button id="longbtn" class="btn">All Time</button>
+        <div class="topnav">
+          <button id="shortbtn" class="btn btn-primary">Past 4 Weeks</button>
+          <button id="middlebtn" class="btn btn-primary">Past 6 Months</button>
+          <button id="longbtn" class="btn btn-primary">All Time</button>
+          <input type="text" name="search" id="search" placeholder="Search...">
+          <input type="submit" id="filter" class="btn btn-primary">
+        </div>
+        <div id="userInfo">
+          <div id="user-tracks"></div>
+          <div id="user-tracks-2"></div>
+          <div id="user-tracks-3"></div>
+          <div id="user-tracks-4"></div>
+          <div id="user-tracks-5"></div>
+          <div id="user-artist"></div>
+          <div id="user-artist-2"></div>
+          <div id="user-artist-3"></div>
+          <div id="user-artist-4"></div>
+          <div id="user-artist-5"></div>
+          <div id="oauth" class="hidden"></div>
+          <div id="moodForm">
+            <input type="range" min="-100" max="0" value="50" class="range blue"/>
+            <input type="submit" class="btn btn-primary" onclick="postMood(event)">
+          </div>
+        </div>
       </div>
       <div class="hidden">
         <div id="trackOneId"></div>
@@ -54,29 +62,19 @@
         <div id="artistFourId"></div>
         <div id="artistFiveId"></div>
       </div>
-        <div id="moodForm">
+<!--         <div class="searchstuff">
           <form>
-            <input type="radio" id="happy" name="mood" value="happy" onclick="moodChoice(this.value)">
-            <label for="happy">Happy</label><br>
-            <input type="radio" id="sad" name="mood" value="sad" onclick="moodChoice(this.value)">
-            <label for="sad">Sad</label><br>
-            <input type="radio" id="neutral" name="mood" value="neutral" onclick="moodChoice(this.value)">
-            <label for="neutral">Neutral</label><br>
-            <button onclick="postMood(event)" id="save" class="btn btn-primary" id="create">Save</button>
-            <button id="cancel" class="btn">Cancel</button>
-          </form>
-        </div>
-        <div class="searchstuff">
-          <form>
-            <!-- <input type="radio" name="track"> Search for track</button>
-            <input type="radio" name="artist"> Search for artist -->
+            <input type="radio" name="track"> Search for track</button>
+            <input type="radio" name="artist"> Search for artist
             <input type="text" name="search" id="search" placeholder="Search...">
-            <input type="submit" id="filter">
-          </form>
+            <input type="submit" id="filter" class="btn btn-primary">
+          </form> -->
           <div id="searchResult">
           </div>
         </div>
-        <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
+        <div class="hidden">
+          <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
+        </div>
       </div>
     </div>
 
@@ -87,7 +85,7 @@
           <div class="pull-left">
             <img class="media-object" width="150" src="{{images.0.url}}" />
           </div>
-          <div class="media-body">
+          <div class="hidden">
             <dl class="dl-horizontal">
               <dt>Display name</dt><dd class="clearfix">{{display_name}}</dd>
               <dt>Id</dt><dd id="userId">{{id}}</dd>
@@ -103,7 +101,7 @@
 
       <script id="user-track-template-1" type="text/x-handlebars-template">
         <div class="media">
-          <div class="media-body">
+          <div class="track">
             <dl class="dl-horizontal">
               <dt>Top Track</dt><dd class="clearfix" id="trackOne">{{name}}</dd>
             </dl>
@@ -113,7 +111,7 @@
 
       <script id="user-track-template-2" type="text/x-handlebars-template">
         <div class="media">
-          <div class="media-body">
+          <div class="track">
             <dl class="dl-horizontal">
               <dt>Second Track</dt><dd class="clearfix" id="trackTwo">{{name}}</dd>
             </dl>
@@ -123,7 +121,7 @@
 
       <script id="user-track-template-3" type="text/x-handlebars-template">
         <div class="media">
-          <div class="media-body">
+          <div class="track">
             <dl class="dl-horizontal">
               <dt>Third Track</dt><dd class="clearfix" id="trackThree">{{name}}</dd>
             </dl>
@@ -133,7 +131,7 @@
 
       <script id="user-track-template-4" type="text/x-handlebars-template">
         <div class="media">
-          <div class="media-body">
+          <div class="media-body track">
             <dl class="dl-horizontal">
               <dt>Fourth Track</dt><dd class="clearfix" id="trackFour">{{name}}</dd>
             </dl>
@@ -143,7 +141,7 @@
 
       <script id="user-track-template-5" type="text/x-handlebars-template">
         <div class="media">
-          <div class="media-body">
+          <div class="media-body track">
             <dl class="dl-horizontal">
               <dt>Fifth Track</dt><dd class="clearfix" id="trackFive">{{name}}</dd>
             </dl>
@@ -153,7 +151,7 @@
 
       <script id="user-artist-template" type="text/x-handlebars-template">
         <div class="media">
-          <div class="media-body">
+          <div class="media-body artist">
             <dl class="dl-horizontal">
               <dt>Top Artist</dt><dd class="clearfix" id="artOne">{{name}}</dd>
             </dl>
@@ -163,7 +161,7 @@
 
       <script id="user-artist-template-2" type="text/x-handlebars-template">
         <div class="media">
-          <div class="media-body">
+          <div class="media-body artist">
             <dl class="dl-horizontal">
               <dt>Second Artist</dt><dd class="clearfix" id="artTwo">{{name}}</dd>
             </dl>
@@ -173,7 +171,7 @@
 
       <script id="user-artist-template-3" type="text/x-handlebars-template">
         <div class="media">
-          <div class="media-body">
+          <div class="media-body artist">
             <dl class="dl-horizontal">
               <dt>Third Artist</dt><dd class="clearfix" id="artThree">{{name}}</dd>
             </dl>
@@ -183,7 +181,7 @@
 
       <script id="user-artist-template-4" type="text/x-handlebars-template">
         <div class="media">
-          <div class="media-body">
+          <div class="media-body artist">
             <dl class="dl-horizontal">
               <dt>Fourth Artist</dt><dd class="clearfix" id="artFour">{{name}}</dd>
             </dl>
@@ -193,7 +191,7 @@
 
       <script id="user-artist-template-5" type="text/x-handlebars-template">
         <div class="media">
-          <div class="media-body">
+          <div class="media-body artist">
             <dl class="dl-horizontal">
               <dt>Fifth Artist</dt><dd class="clearfix" id="artFive">{{name}}</dd>
             </dl>
@@ -242,13 +240,15 @@
       </script>
 
 
-      <script id="oauth-template" type="text/x-handlebars-template">
-        <h2>oAuth info</h2>
-        <dl class="dl-horizontal">
-          <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
-          <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}</dd>
-        </dl>
-      </script>
+      <div class="hidden">
+        <script id="oauth-template" type="text/x-handlebars-template">
+          <h2>oAuth info</h2>
+          <dl class="dl-horizontal">
+            <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
+            <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}</dd>
+          </dl>
+        </script>
+      </div>
     </div>
     
 
@@ -390,6 +390,7 @@
                   $('#login').hide();
                   $('#loggedin').show();
                   $('#moodForm').hide();
+                  $('searchResult').hide();
                 }
             })
           } else {
@@ -437,7 +438,9 @@
 
                     $('#login').hide();
                     $('#loggedin').show();
+                    $('#userInfo').show();
                     $('#moodForm').hide();
+                    $('#searchResult').hide();
                   }
 
 
@@ -484,7 +487,9 @@
 
                   $('#login').hide();
                   $('#loggedin').show();
+                  $('#userInfo').show();
                   $('#moodForm').hide();
+                  $('#searchResult').hide();
                 }
             })
             $.ajax({
@@ -580,7 +585,9 @@
 
                       $('#login').hide();
                       $('#loggedin').show();
+                      $('#userInfo').show();
                       $('#moodForm').show();
+                      $('#searchResult').hide();
                     }
               })
               $.ajax({
